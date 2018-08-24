@@ -55,4 +55,5 @@ file_delimiter = "\t"
 metadata_delimiter = ":"
 
 values = get_lat_long_data(file_path, file_delimiter, metadata_delimiter)
-print( len(values[2][0]) )
+plt.scatter( values[0], values[1]  )
+plt.show()
