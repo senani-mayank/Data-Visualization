@@ -127,6 +127,29 @@ def performTask3( values  ):
     plt.contour( latitudes, longitudes , transposed_data , cmap=cm.jet)
     plt.show()
 
+def perform_task4( values  ):
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    latitudes = values[0]
+    longitudes = values[1]
+
+    X = []
+    Y = []
+    Z = []
+
+    for i in range( len(latitudes) ):
+        for j in range(len(longitudes)):
+            values[2][i][j] = float(values[2][i][j])
+            X.append( latitudes[i] )
+            Y.append( longitudes[j] )
+            if math.isnan(values[2][i][j]) :
+                values[2][i][j] = float(0)
+            Z.append(values[2][i][j]  )
+
+    ax.quiver(X,Y,Z,X,Y,Z)
+    plt.show()
 
 folder_path = '../dataset'
 file_name = 'Aug-2016-tropical-heat-potential-180x188.txt'
@@ -141,4 +164,5 @@ transform_latitude_longitude(values[0], values[1] )
 
 #perform_task1( values[2], INTP_METHODS[1], COLOR_SPECTRUMS[1]  );
 #perform_task2(values, "")
-performTask3(values)
+#performTask3(values)
+perform_task4(values)
