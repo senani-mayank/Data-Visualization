@@ -41,6 +41,9 @@ def get_lines_to_skip( file_path ):
 
 def read_file( file_path, lines_to_skip ) :
     return pd.read_csv (file_path, skiprows=lines_to_skip, sep='\t')
+
+def mask_array( array, mask_value ):
+	return np.ma.masked_equal(data, mask_value )
 	
 
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
@@ -59,4 +62,9 @@ latitudes = np.array( data[first_cloumn_key]  )
 data = data.drop(columns=first_cloumn_key)
 #convert data to numpy 2D array
 data = np.array(data)
-print(  data[0][3]  )
+#mask bad values
+data = mask_array( data, float(bad_flag.strip()) )
+print(  data )
+#with open('your_file.txt', 'w') as f:
+#    for item in data:
+#        f.write("%s\n" % item)
