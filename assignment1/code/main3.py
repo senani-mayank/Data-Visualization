@@ -78,13 +78,13 @@ def perforn_bilinear_interpolation( array ):
 			f4 = data[x4][y4]
 			x = i + 0.5
 			y = j + 0.5
-			if (f1 == bad_value) or (f2 == bad_value) or (f3 == bad_value) or (f4 == bad_value) :
-				val = bad_value
+			if np.isnan(f1) or np.isnan(f2) or np.isnan(f3) or np.isnan(f4) :
+				val = np.nan
 			else:
 				points = [ [x1,y1,f1], [x2,y2,f2], [x3,y3,f3], [x4,y4,f4] ]
 				val = bili_intp_util( points, x, y )
 			bint_arr[i].append( val )
-	return bint_arr
+	return np.array(bint_arr)
 	
 def bili_intp_util( points, x, y ):
     points = sorted(points)               # order points by x, then by y
@@ -111,7 +111,11 @@ def make_float( array, bad_value  ):
 			else :
 				array[i][j] = float(array[i][j])
 	
-		
+def perform_task1( array, intp_method, cmap  ):
+
+    plt.imshow( array, cmap=cmap )
+    plt.show()
+	
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
 num_lines_to_skip = get_lines_to_skip( file_path )
 data = read_file( file_path, num_lines_to_skip, bad_flag )
@@ -128,14 +132,16 @@ latitudes = np.array( data[first_cloumn_key]  )
 data = data.drop(columns=first_cloumn_key)
 #convert data to numpy 2D array
 data = np.array(data)
-#make data type float
-#make_float(data, bad_flag )
+#do interpolation
+data = perforn_bilinear_interpolation(data)
 #mask bad values
 data = np.ma.masked_invalid( data )
 #format_latitudes
 format_latitudes(latitudes)
 format_longitudes(longitudes)
 
-with open('your_file.txt', 'w') as f:
-    for item in data:
-        f.write("%s\n" % item)
+perform_task1(data, INTP_METHODS[0],COLOR_SPECTRUMS[0])
+
+#with open('your_file.txt', 'w') as f:
+#    for item in data:
+#        f.write("%s\n" % item)
