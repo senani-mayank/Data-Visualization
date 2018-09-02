@@ -44,7 +44,20 @@ def read_file( file_path, lines_to_skip ) :
 
 def mask_array( array, mask_value ):
 	return np.ma.masked_equal(data, mask_value )
-	
+
+def format_latitudes( latitudes ):
+    for i in range(len(latitudes)):
+        if 'N' in latitudes[i]:
+            latitudes[i] = float( str(latitudes[i]).replace("N", "" ) )
+        elif 'S' in latitudes[i] :
+            latitudes[i] = float( "-" + str(latitudes[i]).replace("S","") )
+
+def format_longitudes( longitudes ):
+    for i in range(len(longitudes)):
+        if 'E' in longitudes[i]:
+            longitudes[i] = float( str(longitudes[i]).replace("E","")  )
+        elif 'W' in longitudes[i]:
+            longitudes[i] = float( "-" + str(longitudes[i]).replace("W","") )
 
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
 num_lines_to_skip = get_lines_to_skip( file_path )
@@ -64,7 +77,11 @@ data = data.drop(columns=first_cloumn_key)
 data = np.array(data)
 #mask bad values
 data = mask_array( data, float(bad_flag.strip()) )
-print(  data )
+#format_latitudes
+format_latitudes(latitudes)
+format_longitudes(longitudes)
+
+print(  longitudes )
 #with open('your_file.txt', 'w') as f:
 #    for item in data:
 #        f.write("%s\n" % item)
