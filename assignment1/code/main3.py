@@ -11,9 +11,33 @@ INTP_METHODS = ["bilinear", "bicubic"]
 COLOR_SPECTRUMS = ["rainbow", "gray", "BuGn"]
 FILE_NAMES = [ "Aug-2016-meridional-current-181x189", "Aug-2016-potential-temperature-180x188", "Aug-2016-salinity-180x188", "Aug-2016-tropical-heat-potential-180x188", "Aug-2016-zonal-current-181x189" ]
 
+
+cdict_gray = {'red':  ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+
+         'green': ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0)),
+
+         'blue':  ((0.0, 0.0, 0.0),
+                   (1.0, 1.0, 1.0))
+        }
+		
+cdict_BuGn = {'green':   ((0.0, 0.0, 0.0),
+                   (0.5, 0.1, 0.1),
+                   (1.0, 1.0, 1.0)),
+
+         'red': ((0.0, 0.0, 0.0),
+                   (1.0, 0.0, 0.0)),
+
+         'blue':  ((0.0, 0.0, 0.0),
+                   (0.5, 1.0, 1.0),
+                   (1.0, 0.1, 0.1))
+        }
+
+
 BAD_FLAG_KEY = "BAD FLAG"
 folder_path = '../dataset'
-file_name = FILE_NAMES[4]
+file_name = FILE_NAMES[3]
 file_path = folder_path + "/" + file_name + ".txt"
 
 def get_bad_flag( BAD_FLAG_KEY, file_path ):
@@ -100,22 +124,28 @@ def bili_intp_util( points, x, y ):
             q12 * (x2 - x) * (y - y1) +
             q22 * (x - x1) * (y - y1)
            ) / ((x2 - x1) * (y2 - y1) + 0.0)
-		   
-def make_float( array, bad_value  ):
-
-    for i in range( len(array) ):
-        for j in range( len(array[0]) ):
-			if str(float(array[i][j])) == str(bad_value) :
-				#print("found")
-				array[i][j] = float('nan')
-			else :
-				array[i][j] = float(array[i][j])
 	
 def perform_task1( array, intp_method, cmap  ):
 
-    plt.imshow( array, cmap=cmap )
-    plt.show()
+	#array = np.transpose(array)
+	array = np.flipud(array)
+	plt.imshow( array, cmap=cmap )
+	plt.show()
+
+def normalize_values( array ):
+	min = np.nanmin(array)
+	max = np.nanmax(array)
+	if max == min :
+		return
+	for i in range( len(array) ):
+		for j in range( len(array[0]) ):
+			array[i][j] = (array[i][j] - min) / ( max - min )
+
+def custom_color_map( c_name,c_dict ):
+	#https://matplotlib.org/gallery/images_contours_and_fields/custom_cmap.html
+	return col.LinearSegmentedColormap('BlueRed1', c_dict)
 	
+
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
 num_lines_to_skip = get_lines_to_skip( file_path )
 data = read_file( file_path, num_lines_to_skip, bad_flag )
@@ -132,6 +162,8 @@ latitudes = np.array( data[first_cloumn_key]  )
 data = data.drop(columns=first_cloumn_key)
 #convert data to numpy 2D array
 data = np.array(data)
+#normalize data(all values between 0-1)
+normalize_values( data )
 #do interpolation
 data = perforn_bilinear_interpolation(data)
 #mask bad values
@@ -140,8 +172,7 @@ data = np.ma.masked_invalid( data )
 format_latitudes(latitudes)
 format_longitudes(longitudes)
 
-perform_task1(data, INTP_METHODS[0],COLOR_SPECTRUMS[0])
-
-#with open('your_file.txt', 'w') as f:
-#    for item in data:
-#        f.write("%s\n" % item)
+perform_task1( data, INTP_METHODS[0],custom_color_map( "BlueGreen" ,cdict_BuGn) )
+with open('your_file.txt', 'w') as f:
+    for item in data:
+        f.write("%s\n" % item)
