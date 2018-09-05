@@ -16,22 +16,20 @@ cdict_gray = {'red':  ((0.0, 0.0, 0.0),
                    (1.0, 1.0, 1.0)),
 
          'green': ((0.0, 0.0, 0.0),
-                  ),
+                  (1.0, 1.0, 1.0)),
 
          'blue':  ((0.0, 0.0, 0.0),
                    (1.0, 1.0, 1.0))
         }
 		
-cdict_BuGn = {'green':   ((0.0, 0.0, 0.0),
-                   (0.5, 0.1, 0.1),
-                   (1.0, 1.0, 1.0)),
+cdict_BuGn = {'green':   ((0.0, 0.0, 1.0),
+                   (1.0, 0.0, 0.0)),
 
          'red': ((0.0, 0.0, 0.0),
                    (1.0, 0.0, 0.0)),
 
          'blue':  ((0.0, 0.0, 0.0),
-                   (0.5, 1.0, 1.0),
-                   (1.0, 0.1, 0.1))
+                   (1.0, 1.0, 1.0))
         }
 
 cdict_rainbow = {'red':   ((0.0, 0.0, 1.0),
@@ -194,7 +192,7 @@ data = np.ma.masked_invalid( data )
 format_latitudes(latitudes)
 format_longitudes(longitudes)
 
-perform_task1( data, INTP_METHODS[0],custom_color_map( "BlueGreen" ,cdict_rainbow) )
+perform_task1( data, INTP_METHODS[0],custom_color_map( "BlueGreen" ,cdict_gray) )
 with open('your_file.txt', 'w') as f:
     for item in data:
         f.write("%s\n" % item)
