@@ -151,7 +151,7 @@ def perform_task1( array, intp_method, cmap  ):
 
 	#array = np.transpose(array)
 	array = np.flipud(array)
-	plt.imshow( array, cmap='rainbow' )
+	plt.imshow( array, cmap=cmap )
 	plt.show()
 
 def normalize_values( array ):
