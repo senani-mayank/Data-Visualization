@@ -9,14 +9,14 @@ import numpy as np
 
 INTP_METHODS = ["bilinear", "bicubic"]
 COLOR_SPECTRUMS = ["rainbow", "gray", "BuGn"]
-FILE_NAMES = [ "Aug-2016-meridional-current-181x189", "Aug-2016-potential-temperature-180x188", "Aug-2016-salinity-180x188", "Aug-2016-tropical-heat-potential-180x188", "Aug-2016-zonal-current-181x189" ]
+FILE_NAMES = [ "aug_6_temp","Aug-2016-meridional-current-181x189", "Aug-2016-potential-temperature-180x188", "Aug-2016-salinity-180x188", "Aug-2016-tropical-heat-potential-180x188", "Aug-2016-zonal-current-181x189" ]
 
 
 cdict_gray = {'red':  ((0.0, 0.0, 0.0),
                    (1.0, 1.0, 1.0)),
 
          'green': ((0.0, 0.0, 0.0),
-                   (1.0, 1.0, 1.0)),
+                  ),
 
          'blue':  ((0.0, 0.0, 0.0),
                    (1.0, 1.0, 1.0))
@@ -34,10 +34,32 @@ cdict_BuGn = {'green':   ((0.0, 0.0, 0.0),
                    (1.0, 0.1, 0.1))
         }
 
+cdict_rainbow = {'red':   ((0.0, 0.0, 1.0),
+                   (0.2, 1.0, 1.0),
+				   (0.4, 0.0, 0.0),
+				   (0.6, 0.0, 0.0),
+				   (0.8, 0.0, 0.0),
+                   (1.0, 1.0, 0.0)),
 
+         'green': ((0.0, 0.0, 0.0),
+                   (0.2, 1.0, 1.0),
+				   (0.4, 1.0, 1.0),
+				   (0.6, 1.0, 1.0),
+				   (0.8, 0.0, 0.0),
+                   (1.0, 0.0, 1.0)),
+                   
+         'blue':  ((0.0, 0.0, 0.0),
+                   (0.2, 0.0, 0.0),
+				   (0.4, 0.0, 0.0),
+				   (0.6, 1.0, 1.0),
+				   (0.8, 1.0, 1.0),
+                   (1.0, 1.0, 1.0)),
+        }
+		
+		
 BAD_FLAG_KEY = "BAD FLAG"
 folder_path = '../dataset'
-file_name = FILE_NAMES[3]
+file_name = FILE_NAMES[0]
 file_path = folder_path + "/" + file_name + ".txt"
 
 def get_bad_flag( BAD_FLAG_KEY, file_path ):
@@ -129,7 +151,7 @@ def perform_task1( array, intp_method, cmap  ):
 
 	#array = np.transpose(array)
 	array = np.flipud(array)
-	plt.imshow( array, cmap=cmap )
+	plt.imshow( array, cmap='rainbow' )
 	plt.show()
 
 def normalize_values( array ):
@@ -172,7 +194,7 @@ data = np.ma.masked_invalid( data )
 format_latitudes(latitudes)
 format_longitudes(longitudes)
 
-perform_task1( data, INTP_METHODS[0],custom_color_map( "BlueGreen" ,cdict_BuGn) )
+perform_task1( data, INTP_METHODS[0],custom_color_map( "BlueGreen" ,cdict_rainbow) )
 with open('your_file.txt', 'w') as f:
     for item in data:
         f.write("%s\n" % item)
