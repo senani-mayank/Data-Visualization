@@ -163,7 +163,7 @@ def normalize_values( array ):
 
 def custom_color_map( c_name,c_dict ):
 	#https://matplotlib.org/gallery/images_contours_and_fields/custom_cmap.html
-	return col.LinearSegmentedColormap('BlueRed1', c_dict)
+	return col.LinearSegmentedColormap( c_name, c_dict)
 	
 
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
