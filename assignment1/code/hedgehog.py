@@ -105,10 +105,15 @@ def format_longitudes( longitudes ):
 def perform_task( latitudes, longitudes, datau,datav  ):
 	X= latitudes
 	Y= longitudes
-	print(X.shape, Y.shape)
+	
 	UV = (datau**2 + datav**2) ** 0.5
 	plt.title('HEDGEHOG PLOT')
-	Q = plt.quiver( X[::5][0], Y[::5][0], datau[::5][0], datav[::5][0],UV[::5][0], scale=20 )
+	X = np.ma.masked_invalid(X)
+	Y = np.ma.masked_invalid(Y)
+	datau = np.ma.masked_invalid(datau)
+	datav = np.ma.masked_invalid(datav)
+	UV = np.ma.masked_invalid(UV)
+	Q = plt.quiver(Y[::25],X[::25], datav[::25], datau[::25],UV[::25],scale=20 )
 	plt.show()
 	
 def normalize_values( array ):
@@ -121,7 +126,6 @@ def normalize_values( array ):
 			array[i][j] = (array[i][j] - min) / ( max - min )
 
 def normalize_values_1d( array ):
-	print array
 	min = np.nanmin(array)
 	max = np.nanmax(array)
 	if max == min :
@@ -154,22 +158,38 @@ def get_lat_long_values(  bad_flag_key, folder_path, file_name ):
 	#format_latitudes
 	format_latitudes(latitudes)
 	format_longitudes(longitudes)
-	normalize_values_1d(latitudes)
-	normalize_values_1d(longitudes)
+	#normalize_values_1d(latitudes)
+	#normalize_values_1d(longitudes)
 	return [ latitudes, longitudes, data ]
-	
+
+def get_1d_from_2d( array1, array2, array2d ):
+		
+		X = []
+		Y = []
+		Z = []
+		for i in range(len(array1)):
+			for j in range(len(array2)):
+				X.append(float(array1[i]))
+				Y.append(float(array2[j]))
+				Z.append(float(array2d[i][j]))
+		return [ np.array(X), np.array(Y), np.array(Z) ]
+
 datau = get_lat_long_values( BAD_FLAG_KEY, folder_path,FILE_NAMES[1] )
 datav = get_lat_long_values( BAD_FLAG_KEY, folder_path,FILE_NAMES[5] )
-
+values_1du = get_1d_from_2d(datau[0], datau[1], datau[2])
+values_1dv = get_1d_from_2d(datav[0], datav[1], datav[2])
+#print( len(values_1d[0]), len(values_1du[1]), len(values_1d[2]) )
 #normalize data(all values between 0-1)
-normalize_values( datau[2] )
+#normalize_values_1d( values_1du[2] )
+#normalize_values_1d( values_1dv[2] )
 #normalize data(all values between 0-1)
-normalize_values( datav[2] )
-print (datau[2].shape, datav[2].shape)
+#normalize_values( datav[2] )
 #mask bad values
-datau[2] = np.ma.masked_invalid( datau[2] )
-datav[2] = np.ma.masked_invalid( datav[2] )
-perform_task( datau[0], datau[1], datau[2], datav[2]  )
+values_1du[2] = np.ma.masked_invalid( values_1du[2] )
+values_1dv[2] = np.ma.masked_invalid( values_1dv[2] )
+print values_1du[2][180:200]
+print values_1dv[2][180:200]
+perform_task( values_1du[0], values_1du[1], values_1du[2], values_1dv[2]  )
 with open('your_file.txt', 'w') as f:
     for item in datau:
         f.write("%s\n" % item)
