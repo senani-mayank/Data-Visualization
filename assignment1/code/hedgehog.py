@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -5,6 +6,7 @@ import matplotlib.colors as col
 import math
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+
 #import string
 
 INTP_METHODS = ["bilinear", "bicubic"]
@@ -55,9 +57,7 @@ cdict_rainbow = {'red':   ((0.0, 0.0, 1.0),
         }
 		
 		
-BAD_FLAG_KEY = "BAD FLAG"
-folder_path = '../dataset'
-file_name = FILE_NAMES[2]
+
 
 def get_bad_flag( BAD_FLAG_KEY, file_path ):
 	bad_flag = "NA"
@@ -102,7 +102,7 @@ def format_longitudes( longitudes ):
         elif 'W' in longitudes[i]:
             longitudes[i] = float( "-" + str(longitudes[i]).replace("W","") )
 	
-def perform_task( latitudes, longitudes, datau,datav  ):
+def arrowplot( latitudes, longitudes, datau,datav  ):
 	X= latitudes
 	Y= longitudes
 	
@@ -113,7 +113,10 @@ def perform_task( latitudes, longitudes, datau,datav  ):
 	datau = np.ma.masked_invalid(datau)
 	datav = np.ma.masked_invalid(datav)
 	UV = np.ma.masked_invalid(UV)
+	plt.xlabel('LATITUDE')
+	plt.ylabel('LONGITUDE')
 	Q = plt.quiver(Y[::25],X[::25], datav[::25], datau[::25],UV[::25],scale=20 )
+	
 	plt.show()
 	
 def normalize_values( array ):
@@ -173,9 +176,14 @@ def get_1d_from_2d( array1, array2, array2d ):
 				Y.append(float(array2[j]))
 				Z.append(float(array2d[i][j]))
 		return [ np.array(X), np.array(Y), np.array(Z) ]
-
-datau = get_lat_long_values( BAD_FLAG_KEY, folder_path,FILE_NAMES[1] )
-datav = get_lat_long_values( BAD_FLAG_KEY, folder_path,FILE_NAMES[5] )
+		
+BAD_FLAG_KEY = "BAD FLAG"
+#folder_path='../dataset'
+folder_path = str(raw_input("Enter path for the dataset: "))
+file_name = str(raw_input("Enter filename for meridional dataset: "))
+file_name2= str(raw_input("Enter filename for zonaldataset dataset: "))
+datau = get_lat_long_values( BAD_FLAG_KEY, folder_path,file_name )
+datav = get_lat_long_values( BAD_FLAG_KEY, folder_path,file_name2 )
 values_1du = get_1d_from_2d(datau[0], datau[1], datau[2])
 values_1dv = get_1d_from_2d(datav[0], datav[1], datav[2])
 #print( len(values_1d[0]), len(values_1du[1]), len(values_1d[2]) )
@@ -187,9 +195,6 @@ values_1dv = get_1d_from_2d(datav[0], datav[1], datav[2])
 #mask bad values
 values_1du[2] = np.ma.masked_invalid( values_1du[2] )
 values_1dv[2] = np.ma.masked_invalid( values_1dv[2] )
-print values_1du[2][180:200]
-print values_1dv[2][180:200]
-perform_task( values_1du[0], values_1du[1], values_1du[2], values_1dv[2]  )
-with open('your_file.txt', 'w') as f:
-    for item in datau:
-        f.write("%s\n" % item)
+
+#creating hedgehog plot
+arrowplot( values_1du[0], values_1du[1], values_1du[2], values_1dv[2]  )
