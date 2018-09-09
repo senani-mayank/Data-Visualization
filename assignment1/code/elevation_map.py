@@ -103,14 +103,14 @@ def format_longitudes( longitudes ):
         elif 'W' in longitudes[i]:
             longitudes[i] = float( "-" + str(longitudes[i]).replace("W","") )
 	
-def perform_task( latitudes, longitudes, array,  cmap, func_type  ):
+def perform_task( latitudes, longitudes, array,  cmap, is_exponent  ):
 	
 	X= latitudes
 	Y= longitudes
 
 	X, Y = np.meshgrid(X, Y)
 	Z = np.array(array)
-	if func_type == 'exp' :
+	if is_exponent == True :
 		Z = np.exp( Z )
 	Z = np.transpose(Z)
 	Z = np.ma.masked_invalid(Z)
@@ -158,6 +158,7 @@ def custom_color_map( c_name,c_dict ):
 	return col.LinearSegmentedColormap( c_name, c_dict)
 	
 file_path = str(raw_input("Enter file path: "))
+is_exp = str(raw_input("is exponent function 'Y/N': "))
 
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
 num_lines_to_skip = get_lines_to_skip( file_path )
@@ -185,7 +186,10 @@ format_latitudes(latitudes)
 format_longitudes(longitudes)
 normalize_values_1d(latitudes)
 normalize_values_1d(longitudes)
-perform_task( latitudes, longitudes, data, custom_color_map( "BlueGreen" ,cdict_BuGn), 'exp' )
+is_exponent = False
+if is_exp == 'Y':
+	is_exponent = True
+perform_task( latitudes, longitudes, data, custom_color_map( "BlueGreen" ,cdict_BuGn), is_exponent )
 with open('your_file.txt', 'w') as f:
     for item in data:
         f.write("%s\n" % item)
