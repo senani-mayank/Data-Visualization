@@ -140,9 +140,9 @@ def custom_color_map( c_name,c_dict ):
 	#https://matplotlib.org/gallery/images_contours_and_fields/custom_cmap.html
 	return col.LinearSegmentedColormap( c_name, c_dict)
 
-def get_lat_long_values(  bad_flag_key, folder_path, file_name ):
+def get_lat_long_values(  bad_flag_key, file_name ):
 	
-	file_path = folder_path + "/" + file_name + ".txt"
+	file_path = file_name
 	bad_flag = get_bad_flag( bad_flag_key, file_path )
 	num_lines_to_skip = get_lines_to_skip( file_path )
 	data = read_file( file_path, num_lines_to_skip, bad_flag )
@@ -178,12 +178,10 @@ def get_1d_from_2d( array1, array2, array2d ):
 		return [ np.array(X), np.array(Y), np.array(Z) ]
 		
 BAD_FLAG_KEY = "BAD FLAG"
-#folder_path='../dataset'
-folder_path = str(raw_input("Enter path for the dataset: "))
 file_name = str(raw_input("Enter filename for meridional dataset: "))
 file_name2= str(raw_input("Enter filename for zonaldataset dataset: "))
-datau = get_lat_long_values( BAD_FLAG_KEY, folder_path,file_name )
-datav = get_lat_long_values( BAD_FLAG_KEY, folder_path,file_name2 )
+datau = get_lat_long_values( BAD_FLAG_KEY, file_name )
+datav = get_lat_long_values( BAD_FLAG_KEY, file_name2 )
 values_1du = get_1d_from_2d(datau[0], datau[1], datau[2])
 values_1dv = get_1d_from_2d(datav[0], datav[1], datav[2])
 #print( len(values_1d[0]), len(values_1du[1]), len(values_1d[2]) )
