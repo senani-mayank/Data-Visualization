@@ -157,6 +157,7 @@ def custom_color_map( c_name,c_dict ):
 	#https://matplotlib.org/gallery/images_contours_and_fields/custom_cmap.html
 	return col.LinearSegmentedColormap( c_name, c_dict)
 	
+file_path = str(raw_input("Enter file path: "))
 
 bad_flag = get_bad_flag( BAD_FLAG_KEY, file_path )
 num_lines_to_skip = get_lines_to_skip( file_path )
